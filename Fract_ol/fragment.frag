@@ -5,7 +5,7 @@ precision mediump float;
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
-
+int max_it = 200;
 float ca = 0.0;
 float cb = 0.0;
 
@@ -28,7 +28,7 @@ int julia(float x, float y)
 	float x1 = 0.0;
 	float y1 = 0.0;
 
-	while ((za * za + zb * zb <= 4.0) && (i < 400))
+	while ((za * za + zb * zb <= 4.0) && (i < max_it))
 	{
 		temp = za;
 		za = za * za - zb * zb + ca;
@@ -42,22 +42,42 @@ int julia(float x, float y)
 void main()
 {
 	float fov = 90.0;
-	ca = u_mouse.x / u_resolution.x * 2.0;
-	cb = u_mouse.y / u_resolution.y * 2.0;
+	ca = (u_mouse.x) / u_resolution.x * 2.0;
+	cb = (u_mouse.y) / u_resolution.y  * 2.0;
 
 	int ret = julia(gl_FragCoord.x, gl_FragCoord.y);
 
-	if (ret >= 400)
+	if (ret >= max_it)
 	{
 		gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 	}
-	else if(ret >= 100)
+		else if(ret > max_it - 100)
+	{
+		gl_FragColor = vec4(0.0941, 0.6627, 0.8863, 1.0);
+
+	}
+	else if(ret > max_it - 150)
 	{
 		gl_FragColor = vec4(0.9725, 0.6745, 0.0353, 1.0);
 
 	}
+	else if(ret > max_it / 2)
+	{
+		gl_FragColor = vec4(0.5725, 0.9137, 0.1843, 1.0);
+
+	}
+	else if(ret > max_it / 3)
+	{
+		gl_FragColor = vec4(0.5333, 0.098, 0.7333, 1.0);
+
+	}
+		else if(ret > max_it / 5)
+	{
+		gl_FragColor = vec4(0.8314, 0.7294, 0.3882, 1.0);
+
+	}
 	else
 	{
-		gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+		gl_FragColor = vec4(0.6627, 0.9451, 0.2039, 1.0);
 	}
 }
