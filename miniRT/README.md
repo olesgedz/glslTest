@@ -1,4 +1,5 @@
-# miniRT code by https://github.com/ssloy
+# miniRT 
+## code by https://github.com/ssloy ported to GLSL
 
 ## install glslViewer 
 ### run by executing command `glslViewer fragment.frag` 
