@@ -4,14 +4,16 @@ precision mediump float;
 
 uniform float u_time;
 uniform vec2 u_resolution;
-
+vec3 orig = vec3(0.0,0.0,0.0);
+vec3 lightsource = vec3(0.0, 1.0, 0.7);
 struct t_object
 {
 	vec3 pos;
-	vec4 color;
+	vec3 color;
 	float radius;
 	int type;
 };
+t_object objects[3];
 
 bool ray_intersect(vec3 orig, vec3 dir, t_object obj, out float t0)
 {
@@ -27,26 +29,36 @@ bool ray_intersect(vec3 orig, vec3 dir, t_object obj, out float t0)
 	return true;
 }
 
-vec4 cast_ray(vec3 orig, vec3 dir, t_object objects[3]) {
+vec3 cast_ray(vec3 orig, vec3 dir, t_object objects[3]) {
 	float sphere_dist = 10000.0;
 	float t0;
+	float diffuse_light_intensity = 0.0;
+	vec3 normal;
+	vec3 hit;
+	vec3 color;
 	if (ray_intersect(orig, dir, objects[0], t0)) {
-		return vec4(0.7882, 0.2471, 0.1137, 1.0);
+		hit = orig + dir*t0;
+		normal = hit - objects[0].pos;
+		color = objects[0].color;
+		float diffuse_light_intensity = 0.0;
+		vec3 light_dir = lightsource - hit;
+		diffuse_light_intensity = 1.5 * max(0.0, dot(light_dir,normal));
+		return vec3(0.7882, 0.2471, 0.1137) * diffuse_light_intensity;
 	}
-	return vec4(0.2471, 0.8784, 0.902, 1.0);
+	return vec3(0.2471, 0.8784, 0.902);
 }
-t_object objects[3];
-vec3 orig = vec3(0.0,0.0,0.0);
+
+
 void main()
 {
 	objects[0].pos = vec3(0.0, 0.0, -1.0);
 	objects[0].radius = 0.4;
-	objects[0].color = vec4(1,0,0,1);
+	objects[0].color = vec3(1,0,0);
 
 	float fov = 90.0;
 	float x = (2.0 *((gl_FragCoord.x   + 0.5)/(u_resolution.x  + 1.0)- 0.5)) * tan(90.0/2.0) * u_resolution.x/u_resolution.y;
 	float y =  -(2.0*((gl_FragCoord.y + 0.5)/(u_resolution.y - 1.5) - 0.5))*tan(90.0/2.0);
 	
 	vec3 dir = normalize(vec3(x, y, -1.0));
-	gl_FragColor = cast_ray(orig, dir, objects);
+	gl_FragColor = vec4(cast_ray(orig, dir, objects),1.0);
 }
