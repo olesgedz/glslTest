@@ -56,9 +56,13 @@ void main()
 	objects[0].color = vec3(1,0,0);
 
 	float fov = 90.0;
-	float x = (2.0 *((gl_FragCoord.x   + 0.5)/(u_resolution.x  + 1.0)- 0.5)) * tan(90.0/2.0) * u_resolution.x/u_resolution.y;
-	float y =  -(2.0*((gl_FragCoord.y + 0.5)/(u_resolution.y - 1.5) - 0.5))*tan(90.0/2.0);
-	
+	// float x = (2.0 *((gl_FragCoord.x   + 0.5)/(u_resolution.x  + 1.0)- 0.5)) * tan(90.0/2.0) * u_resolution.x/u_resolution.y;
+	// float y =  -(2.0*((gl_FragCoord.y + 0.5)/(u_resolution.y - 1.5) - 0.5))*tan(90.0/2.0);
+	float x  = (gl_FragCoord.x / (u_resolution.x  + 1.0))- 0.5; 
+	float y = (gl_FragCoord.y/(u_resolution.y  + 1.0))- 0.5;
+	// float x = gl_FragCoord.x ;
+	// float y = gl_FragCoord.y ;
+
 	vec3 dir = normalize(vec3(x, y, -1.0));
 	gl_FragColor = vec4(cast_ray(orig, dir, objects),1.0);
 }
